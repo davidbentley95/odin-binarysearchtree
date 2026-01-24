@@ -10,4 +10,9 @@ class Tree {
     constructor(arr) {
         this.root = buildTree(arr); 
     }
+
+    buildTree(array) {
+        const cleanArr = [...new Set(array)].sort((a,b) => a - b);
+
+    }
 }
