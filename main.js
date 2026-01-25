@@ -1,32 +1,46 @@
 class Node {
-    constructor(value = null, leftChild = null, rightChild = null){
-        this.value = value;
-        this.leftChild = leftChild;
-        this.rightChild = rightChild;
-    }
+  constructor(value = null, leftChild = null, rightChild = null) {
+    this.value = value;
+    this.leftChild = leftChild;
+    this.rightChild = rightChild;
+  }
 }
 
 class Tree {
-    constructor(arr) {
-        const cleanArr = [...new Set(array)].sort((a,b) => a - b);
-        this.root = this.buildTree(cleanArr); 
+  constructor(arr) {
+    const cleanArr = [...new Set(array)].sort((a, b) => a - b);
+    this.root = this.buildTree(cleanArr);
+  }
+
+  buildTree(array) {
+    if (array.length === 0) {
+      return null;
     }
 
-    buildTree(array) {
-        if(array.length === 0) {
-            return null;
-        }
+    const midPoint = Math.floor(array.length / 2);
+    const root = new Node(array[midPoint]);
 
-        const midPoint = Math.floor(array.length / 2);
-        const root = new Node(array[midPoint]); 
+    const leftHalf = array.slice(0, mid);
+    const rightHalf = array.slide(mid + 1);
 
-        const leftHalf = array.slice(0, mid);
-        const rightHalf = array.slide(mid + 1);
+    root.leftChild = this.buildTree(leftHalf);
+    root.rightChild = this.buildTree(rightHalf);
 
-        root.leftChild = this.buildTree(leftHalf);
-        root.rightChild = this.buildTree(rightHalf);
+    return root;
+  }
 
-        return root; 
-
-    }
+  pretty() {
+    const prettyPrint = (node, prefix = "", isLeft = true) => {
+      if (node === null) {
+        return;
+      }
+      if (node.right !== null) {
+        prettyPrint(node.right, `${prefix}${isLeft ? "│   " : "    "}`, false);
+      }
+      console.log(`${prefix}${isLeft ? "└── " : "┌── "}${node.data}`);
+      if (node.left !== null) {
+        prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
+      }
+    };
+  }
 }
