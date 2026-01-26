@@ -66,17 +66,24 @@ class Tree {
         return;
       }
 
-      if(currentNode.value > value && currentNode.leftChild !== null) {
-        currentNode = currentNode.leftChild;
-      }else if(currentNode.value > value && currentNode.leftChild === null) {
-        currentNode.leftChild = new Node(value);
-        return;
-      }else if(currentNode.value < value && currentNode.rightChild !== null) {
-        currentNode = currentNode.rightChild;
-      }else if(currentNode.value < value && currentNode.rightChild === null){
-        currentNode.rightChild = new Node (value);
-        return;
+      const goLeft = value < currentNode.value;
+      const next = goLeft ? currentNode.leftChild : currentNode.rightChild;
+
+      if(next === null) {
+        const newNode = new Node(value);
+        if(goLeft) {
+          currentNode.leftChild = newNode;
+        } else {
+          currentNode.rightChild = newNode;
+        }
+        return newNode;
       }
+
+      currentNode = next;
     }
+  }
+
+  deleteItem(value) {
+
   }
 }
