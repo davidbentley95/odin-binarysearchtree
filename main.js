@@ -84,6 +84,87 @@ class Tree {
   }
 
   deleteItem(value) {
+    if(this.root === null) {
+      return false;
+    }
 
-  }
+    let current = this.root;
+    let parent = null;
+
+    //find node in tree
+    while(current !== null && current.value !== value) {
+      parent = current;
+      current = value < current.value ? current.leftChild : current.rightChild;
+    }
+    
+    //if we have a null node, we did not find the value
+    if(current === null) {
+      return null;
+    }
+
+    const hasLeft = current.leftChild !== null;
+    const hasRight = current.rightChild !== null;
+
+    //has no children
+    if(!hasLeft && !hasRight) {
+      if(parent === null){
+        this.root = null; 
+      } else if(parent.leftChild === current) {
+        parent.leftChild = null;
+      } else {
+        parent.rightChild = null;
+      }
+      return true;
+    }
+
+    //has 1 left child
+    if(hasLeft && !hasRight) {
+      if(parent === null) {
+        this.root = current.leftChild;
+      } else if(parent.leftChild === current) {
+        parent.leftChild = current.leftChild;
+      } else {
+        parent.rightChild = current.leftChild;
+      }
+    }
+
+    //has 1 right child
+    if(!hasLeft && hasRight) {
+      if(parent === null) {
+        this.root = current.rightChild;
+      } else if(parent.leftChild === current) {
+        parent.leftChild = current.rightChild;
+      } else {
+        parent.rightChild = current.rightChild;
+      }
+      return true;
+    }
+
+    // 5) Two children — inorder successor
+    let successorParent = current;
+    let successor = current.rightChild;
+
+    while (successor.leftChild !== null) {
+      successorParent = successor;
+      successor = successor.leftChild;
+    }
+
+    // Detach successor from its old position
+    if (successorParent !== current) {
+      successorParent.leftChild = successor.rightChild;
+      successor.rightChild = current.rightChild;
+    }
+
+    successor.leftChild = current.leftChild;
+
+    // Replace current with successor
+    if (parent === null) {
+      this.root = successor;
+    } else if (parent.leftChild === current) {
+      parent.leftChild = successor;
+    } else {
+      parent.rightChild = successor;
+    }
+    return true;
+    }
 }
