@@ -178,4 +178,40 @@ class Tree {
 
       return currentNode;
     }
+
+    levelOrderForEach(callback) {
+
+      if(typeof callback !== "function") throw new Error("A callback function is required");
+      
+      if(this.root === null) return null;
+
+      const queue = [];
+
+      queue.push(this.root);
+
+      while(queue.length > 0) {
+        callback(queue[0]);
+
+        const leftChild = queue[0].leftChild;
+        const rightChild = queue[0].rightChild;
+
+        if(leftChild) queue.push(leftChild);
+
+        if(rightChild) queue.push(rightChild);
+
+        queue.shift();
+      }
+
+    }
+
+    preOrderForEach(callback, node = this.root) {
+      if(typeof callback !== "function") throw new Error("A callback function is required");
+      
+      if(node === null) return;
+
+      callback(node);
+      this.preOrderForEach(callback, node.leftChild);
+      this.preOrderForEach(callback, node.rightChild);
+
+    }
 }
