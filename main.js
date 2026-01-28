@@ -140,7 +140,7 @@ class Tree {
       return true;
     }
 
-    // 5) Two children — inorder successor
+    // Two children — inorder successor
     let successorParent = current;
     let successor = current.rightChild;
 
