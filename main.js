@@ -167,4 +167,15 @@ class Tree {
     }
     return true;
     }
+
+    find(value) {
+
+      let currentNode = this.root;
+
+      while(currentNode !== null && currentNode.value !== value) {
+        currentNode = value < currentNode.value ? currentNode.leftChild : currentNode.rightChild;
+      }
+
+      return currentNode;
+    }
 }
