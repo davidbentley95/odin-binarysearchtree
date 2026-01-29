@@ -214,4 +214,24 @@ class Tree {
       this.preOrderForEach(callback, node.rightChild);
 
     }
+
+    inOrderForEach(callback, node = this.root) {
+      if(typeof callback !== "function") throw new Error("A callback function is required");
+      
+      if(node === null) return;
+      
+      this.inOrderForEach(callback, node.leftChild);
+      callback(node);
+      this.inOrderForEach(callback, node.rightChild);
+    }
+
+    postOrderForEach(callback, node = this.root) {
+      if(typeof callback !== "function") throw new Error("A callback function is required");
+      
+      if(node === null) return;
+      
+      this.postOrderForEach(callback, node.leftChild);
+      this.postOrderForEach(callback, node.rightChild);
+      callback(node);
+    }
 }
