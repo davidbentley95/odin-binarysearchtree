@@ -256,4 +256,20 @@ class Tree {
       return this._heightRecurse(targetNode);
 
     }
+
+    depth(value) {
+      let currentNode = this.root;
+      let depthLevel = 0;
+
+      while(currentNode !== null && currentNode.value !== value) {
+        currentNode = value < currentNode.value ? currentNode.leftChild : currentNode.rightChild;
+        depthLevel++;
+      }
+
+      if(currentNode === null) {
+        return null;
+      }
+
+      return depthLevel;
+    }
 }
