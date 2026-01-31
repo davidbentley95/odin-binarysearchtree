@@ -234,4 +234,26 @@ class Tree {
       this.postOrderForEach(callback, node.rightChild);
       callback(node);
     }
+
+    _heightRecurse(node) {
+
+      if(node === null) {
+        return -1;
+      }
+
+      let leftHeight = this._heightRecurse(node.leftChild);
+      let rightHeight = this._heightRecurse(node.rightChild);
+
+      return Math.max(leftHeight, rightHeight) + 1;
+      
+    }
+
+    height(value) {
+      
+      const targetNode = this.find(value);
+      if(targetNode === null) return null;
+
+      return this._heightRecurse(targetNode);
+
+    }
 }
