@@ -286,4 +286,15 @@ class Tree {
 
     return this.isBalanced(node.leftChild) && this.isBalanced(node.rightChild);
   }
+
+  rebalance() {
+    if (this.root === null) return;
+
+    const values = [];
+    this.inOrderForEach((node) => values.push(node.value));
+
+    const cleanValues = [...new Set(values)].sort((a, b) => a - b);
+
+    this.root = this.buildTree(cleanValues);
+  }
 }
