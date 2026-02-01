@@ -53,12 +53,11 @@ class Tree {
   }
 
   insert(value) {
-    
-    if(this.root === null) {
-      this.root = new Node (value);
+    if (this.root === null) {
+      this.root = new Node(value);
       return this.root;
     }
-    
+
     let currentNode = this.root;
 
     while (true) {
@@ -69,9 +68,9 @@ class Tree {
       const goLeft = value < currentNode.value;
       const next = goLeft ? currentNode.leftChild : currentNode.rightChild;
 
-      if(next === null) {
+      if (next === null) {
         const newNode = new Node(value);
-        if(goLeft) {
+        if (goLeft) {
           currentNode.leftChild = newNode;
         } else {
           currentNode.rightChild = newNode;
@@ -84,7 +83,7 @@ class Tree {
   }
 
   deleteItem(value) {
-    if(this.root === null) {
+    if (this.root === null) {
       return false;
     }
 
@@ -92,13 +91,13 @@ class Tree {
     let parent = null;
 
     //find node in tree
-    while(current !== null && current.value !== value) {
+    while (current !== null && current.value !== value) {
       parent = current;
       current = value < current.value ? current.leftChild : current.rightChild;
     }
-    
+
     //if we have a null node, we did not find the value
-    if(current === null) {
+    if (current === null) {
       return null;
     }
 
@@ -106,10 +105,10 @@ class Tree {
     const hasRight = current.rightChild !== null;
 
     //has no children
-    if(!hasLeft && !hasRight) {
-      if(parent === null){
-        this.root = null; 
-      } else if(parent.leftChild === current) {
+    if (!hasLeft && !hasRight) {
+      if (parent === null) {
+        this.root = null;
+      } else if (parent.leftChild === current) {
         parent.leftChild = null;
       } else {
         parent.rightChild = null;
@@ -118,10 +117,10 @@ class Tree {
     }
 
     //has 1 left child
-    if(hasLeft && !hasRight) {
-      if(parent === null) {
+    if (hasLeft && !hasRight) {
+      if (parent === null) {
         this.root = current.leftChild;
-      } else if(parent.leftChild === current) {
+      } else if (parent.leftChild === current) {
         parent.leftChild = current.leftChild;
       } else {
         parent.rightChild = current.leftChild;
@@ -129,10 +128,10 @@ class Tree {
     }
 
     //has 1 right child
-    if(!hasLeft && hasRight) {
-      if(parent === null) {
+    if (!hasLeft && hasRight) {
+      if (parent === null) {
         this.root = current.rightChild;
-      } else if(parent.leftChild === current) {
+      } else if (parent.leftChild === current) {
         parent.leftChild = current.rightChild;
       } else {
         parent.rightChild = current.rightChild;
@@ -166,110 +165,125 @@ class Tree {
       parent.rightChild = successor;
     }
     return true;
+  }
+
+  find(value) {
+    let currentNode = this.root;
+
+    while (currentNode !== null && currentNode.value !== value) {
+      currentNode =
+        value < currentNode.value
+          ? currentNode.leftChild
+          : currentNode.rightChild;
     }
 
-    find(value) {
+    return currentNode;
+  }
 
-      let currentNode = this.root;
+  levelOrderForEach(callback) {
+    if (typeof callback !== "function")
+      throw new Error("A callback function is required");
 
-      while(currentNode !== null && currentNode.value !== value) {
-        currentNode = value < currentNode.value ? currentNode.leftChild : currentNode.rightChild;
-      }
+    if (this.root === null) return null;
 
-      return currentNode;
+    const queue = [];
+
+    queue.push(this.root);
+
+    while (queue.length > 0) {
+      callback(queue[0]);
+
+      const leftChild = queue[0].leftChild;
+      const rightChild = queue[0].rightChild;
+
+      if (leftChild) queue.push(leftChild);
+
+      if (rightChild) queue.push(rightChild);
+
+      queue.shift();
+    }
+  }
+
+  preOrderForEach(callback, node = this.root) {
+    if (typeof callback !== "function")
+      throw new Error("A callback function is required");
+
+    if (node === null) return;
+
+    callback(node);
+    this.preOrderForEach(callback, node.leftChild);
+    this.preOrderForEach(callback, node.rightChild);
+  }
+
+  inOrderForEach(callback, node = this.root) {
+    if (typeof callback !== "function")
+      throw new Error("A callback function is required");
+
+    if (node === null) return;
+
+    this.inOrderForEach(callback, node.leftChild);
+    callback(node);
+    this.inOrderForEach(callback, node.rightChild);
+  }
+
+  postOrderForEach(callback, node = this.root) {
+    if (typeof callback !== "function")
+      throw new Error("A callback function is required");
+
+    if (node === null) return;
+
+    this.postOrderForEach(callback, node.leftChild);
+    this.postOrderForEach(callback, node.rightChild);
+    callback(node);
+  }
+
+  _heightRecurse(node) {
+    if (node === null) {
+      return -1;
     }
 
-    levelOrderForEach(callback) {
+    let leftHeight = this._heightRecurse(node.leftChild);
+    let rightHeight = this._heightRecurse(node.rightChild);
 
-      if(typeof callback !== "function") throw new Error("A callback function is required");
-      
-      if(this.root === null) return null;
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
 
-      const queue = [];
+  height(value) {
+    const targetNode = this.find(value);
+    if (targetNode === null) return null;
 
-      queue.push(this.root);
+    return this._heightRecurse(targetNode);
+  }
 
-      while(queue.length > 0) {
-        callback(queue[0]);
+  depth(value) {
+    let currentNode = this.root;
+    let depthLevel = 0;
 
-        const leftChild = queue[0].leftChild;
-        const rightChild = queue[0].rightChild;
-
-        if(leftChild) queue.push(leftChild);
-
-        if(rightChild) queue.push(rightChild);
-
-        queue.shift();
-      }
-
+    while (currentNode !== null && currentNode.value !== value) {
+      currentNode =
+        value < currentNode.value
+          ? currentNode.leftChild
+          : currentNode.rightChild;
+      depthLevel++;
     }
 
-    preOrderForEach(callback, node = this.root) {
-      if(typeof callback !== "function") throw new Error("A callback function is required");
-      
-      if(node === null) return;
-
-      callback(node);
-      this.preOrderForEach(callback, node.leftChild);
-      this.preOrderForEach(callback, node.rightChild);
-
+    if (currentNode === null) {
+      return null;
     }
 
-    inOrderForEach(callback, node = this.root) {
-      if(typeof callback !== "function") throw new Error("A callback function is required");
-      
-      if(node === null) return;
-      
-      this.inOrderForEach(callback, node.leftChild);
-      callback(node);
-      this.inOrderForEach(callback, node.rightChild);
+    return depthLevel;
+  }
+
+  isBalanced(node = this.root) {
+    if (node === null) return true;
+
+    const leftHeight = this._heightRecurse(node.leftChild);
+    const rightHeight = this._heightRecurse(node.rightChild);
+
+    if (Math.abs(leftHeight - rightHeight) > 1) {
+      return false;
     }
 
-    postOrderForEach(callback, node = this.root) {
-      if(typeof callback !== "function") throw new Error("A callback function is required");
-      
-      if(node === null) return;
-      
-      this.postOrderForEach(callback, node.leftChild);
-      this.postOrderForEach(callback, node.rightChild);
-      callback(node);
-    }
-
-    _heightRecurse(node) {
-
-      if(node === null) {
-        return -1;
-      }
-
-      let leftHeight = this._heightRecurse(node.leftChild);
-      let rightHeight = this._heightRecurse(node.rightChild);
-
-      return Math.max(leftHeight, rightHeight) + 1;
-      
-    }
-
-    height(value) {
-      
-      const targetNode = this.find(value);
-      if(targetNode === null) return null;
-
-      return this._heightRecurse(targetNode);
-
-    }
-
-    depth(value) {
-      let currentNode = this.root;
-      let depthLevel = 0;
-
-      while(currentNode !== null && currentNode.value !== value) {
-        currentNode = value < currentNode.value ? currentNode.leftChild : currentNode.rightChild;
-        depthLevel++;
-      }
-
-      if(currentNode === null) {
-        return null;
-      }
-
-      return depthLevel;
-    }
+    return this.isBalanced(node.leftChild) && this.isBalanced(node.rightChild);
+  }
 }
